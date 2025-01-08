@@ -1,5 +1,8 @@
 import React, { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 export const ProductContext = createContext();
 
@@ -101,8 +104,7 @@ const ProductContextProvider = ({ children }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!formData.title || !formData.price || !formData.description) {
-      // Validation check for empty form fields
-      alert('Please fill all fields.');
+      toast.error('Please fill all fields.');
       return;
     }
 
@@ -112,9 +114,11 @@ const ProductContextProvider = ({ children }) => {
       );
       setProducts(updatedProduct);
       setEditingId(null);
+      toast.success('Product updated successfully!');
     } else {
       const newProduct = { ...formData, id: Date.now() };
       setProducts([...products, newProduct]);
+      toast.success('Product added successfully!');
     }
     setFormData({ image: "", title: "", category: "", price: "", description: "" });
     navigate("/");
@@ -127,12 +131,14 @@ const ProductContextProvider = ({ children }) => {
   const handleDelete = (id) => {
     const filteredProducts = products.filter((product) => product.id !== id);
     setProducts(filteredProducts);
+    toast.success('Product deleted successfully!');
   };
 
   const handleEdit = (id) => {
     const editableProduct = products.find((product) => product.id === id);
     setFormData(editableProduct);
     setEditingId(id)
+    toast.info('You can now edit the product.');
   }
 
   const category = ["All", ...new Set(products.map((product) => product.category))];
@@ -142,6 +148,7 @@ const ProductContextProvider = ({ children }) => {
   return (
     <ProductContext.Provider value={{ products, formData, handleOnChange, handleSubmit, handleDelete, handleEdit, category, setSelectedCategory, filteredCategoryProducts }}>
       {children}
+      <ToastContainer />
     </ProductContext.Provider>
   );
 };
