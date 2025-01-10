@@ -1,15 +1,18 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { ProductContext } from '../context/ProductContextProvider';
+import Loader from './Loader';
 
 const Home = () => {
-    const {filteredCategoryProducts } = useContext(ProductContext);
+    const { filteredCategoryProducts } = useContext(ProductContext);
+
+    if(!filteredCategoryProducts) return <Loader />
 
     return (
         <div className="min-h-screen w-full p-2">
             {/* Grid Layout */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
-                {filteredCategoryProducts.map((product,index) => (
+                {filteredCategoryProducts.map((product, index) => (
                     <Link
                         key={index}
                         to={`/details/${product.id}`}
